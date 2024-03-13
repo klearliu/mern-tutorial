@@ -1,20 +1,10 @@
 import express from "express";
-import { PORT, mongoDB_URL } from "./config.js";
-import mongoose from "mongoose";
-import { Book } from "./models/bookModel.js";
+import { Book } from "../models/bookModel.js";
 
-const app = express();
-
-// Middleware for parsing request body
-app.use(express.json());
-
-app.get("/", (request, response) => {
-  console.log(request);
-  return response.status(234).send("Welcome to MERN Stack Tutorial");
-});
+const router = express.Router();
 
 // Route for saving a new book
-app.post("/books", async (request, reponse) => {
+router.post("/", async (request, reponse) => {
   try {
     if (
       !request.body.title ||
@@ -41,7 +31,7 @@ app.post("/books", async (request, reponse) => {
 });
 
 // Route for GET ALL BOOKS
-app.get("/books", async (request, response) => {
+router.get("/", async (request, response) => {
   try {
     const books = await Book.find({});
     return response.status(200).json({
@@ -55,7 +45,7 @@ app.get("/books", async (request, response) => {
 });
 
 // Route for GET BOOK by id
-app.get("/books/:id", async (request, response) => {
+router.get("/:id", async (request, response) => {
   try {
     const { id } = request.params;
 
@@ -68,7 +58,7 @@ app.get("/books/:id", async (request, response) => {
 });
 
 // Route for UPDATE BOOK
-app.put("/books/:id", async (request, response) => {
+router.put("/:id", async (request, response) => {
   try {
     if (
       !request.body.title ||
@@ -94,7 +84,7 @@ app.put("/books/:id", async (request, response) => {
 });
 
 // Route for DELETE Book
-app.delete("/books/:id", async (request, response) => {
+router.delete("/:id", async (request, response) => {
   try {
     const { id } = request.params;
     const result = await Book.findByIdAndDelete(id);
@@ -108,14 +98,4 @@ app.delete("/books/:id", async (request, response) => {
   }
 });
 
-mongoose
-  .connect(mongoDB_URL)
-  .then(() => {
-    console.log("App connected to the database");
-    app.listen(PORT, () => {
-      console.log(`App is listening to port: ${PORT}`);
-    });
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+export default router;
