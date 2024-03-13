@@ -16,6 +16,20 @@ app.get("/", (request, response) => {
 
 app.use("/books", booksRoute);
 
+/* CORS policy
+
+app.use(cors()) this allows all origins with Default of cors.
+
+I will use custom origins
+*/
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type"],
+  })
+);
+
 mongoose
   .connect(mongoDB_URL)
   .then(() => {
